@@ -27,9 +27,9 @@ def getStrContentOfWebPage2(url_address):
 
 def getListOfRTValuation(all_page_content):
     real_time_valuation = re.findall('id="gz_gsz">(.+?)</span>' ,all_page_content)
-    for i in real_time_valuation:
-        print('基金实时估值为：')
-        print(i)
+    # for i in real_time_valuation:
+    #     print('基金实时估值为：')
+    #     print(i)
     return real_time_valuation
 
 def getListOfRTPercent(all_page_content):
@@ -54,6 +54,24 @@ thread_get_web_page_519697 = threading.Thread(target=getStrContentOfWebPage2,arg
 thread_get_web_page_519697.start()
 # thread_get_web_page_519697.join()
 
+response = urllib.request.urlopen('http://fund.eastmoney.com/000656.html')
+content = response.read().decode('utf-8')
+last_10_days_percent = re.findall('<td class="alignLeft">[0-9][0-9]-[0-9][0-9]</td>  <td class="alignRight bold">(.+?)</td>', content)
+print(last_10_days_percent)
+mean_data = []
+for i in last_10_days_percent:
+    mean_data.append(float(i))
+last_10_days_mean_000656 = np.mean(mean_data)
+
+response = urllib.request.urlopen('http://fund.eastmoney.com/519697.html')
+content = response.read().decode('utf-8')
+last_10_days_percent = re.findall('<td class="alignLeft">[0-9][0-9]-[0-9][0-9]</td>  <td class="alignRight bold">(.+?)</td>', content)
+print(last_10_days_percent)
+mean_data = []
+for i in last_10_days_percent:
+    mean_data.append(float(i))
+last_10_days_mean_519697 = np.mean(mean_data)
+
 import matplotlib.gridspec as gridspec
 gs = gridspec.GridSpec(2, 1)
 plt.ion()
@@ -70,8 +88,10 @@ while True:
     print(now_rtvaluation_519697)
     if (now_rtvaluation_000656 == []) or (now_rtvaluation_519697 == []):
         continue
-    y_000656.append(float(now_rtvaluation_000656[0]))
-    y_519697.append(float(now_rtvaluation_519697[0]))
+    print(last_10_days_mean_000656)
+    print(last_10_days_mean_519697)
+    y_000656.append((float(now_rtvaluation_000656[0]) - last_10_days_mean_000656)/last_10_days_mean_000656*100)
+    y_519697.append((float(now_rtvaluation_519697[0]) - last_10_days_mean_519697)/last_10_days_mean_519697*100)
     plt.clf()
     plt.subplot(gs[0, :])
     x1 = plt.plot(y_519697)
