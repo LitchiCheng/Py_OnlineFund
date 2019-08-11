@@ -153,7 +153,7 @@ class AutoBlog:
 
 blog=AutoBlog()
 blog.openTheBlog("https://weibo.com",10)
-blog.inputUserAndPassword('darboy@foxmail.com', '3.14159265758', 10, 10)
+blog.inputUserAndPassword('darboy@foxmail.com', '3.14159265357', 10, 10)
 while True:
     blog.sendBlog('D:\\爬虫下载\\image','D:\\uploadImage',"E:\\code\\python\\py-FundOnline\\upload.exe",20)
     time.sleep(300) 
